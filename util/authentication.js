@@ -3,7 +3,12 @@ function createUserSession(req, user, action) {
   req.session.save(action); //save methon from express session package
 }
 
+function destroyUserAuthSession(req) {
+  req.session.uid = null;
+}
+
 
 module.exports = {
-    createUserSession: createUserSession
+    createUserSession: createUserSession,
+    destroyUserAuthSession: destroyUserAuthSession
 }
