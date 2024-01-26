@@ -1,6 +1,7 @@
 function createUserSession(req, user, action) {
   req.session.uid = user._id.toString();
-  req.session.save(action); //save methon from express session package
+  req.session.isAdmin = user.isAdmin;
+  req.session.save(action); //save method from express session package
 }
 
 function destroyUserAuthSession(req) {
