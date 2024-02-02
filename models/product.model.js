@@ -7,8 +7,7 @@ class Product {
         this.price = +productData.price;
         this.description = productData.description;
         this.image = productData.image; // the name of the image file
-        this.imagePath = `product-data/images/${productData.image}`;
-        this.imageUrl = `/products/assets/images/${productData.image}`;
+        this.updateImageData();
         if (productData._id) {
             this.id = productData._id.toString();
         }
@@ -31,7 +30,7 @@ class Product {
             error.code = 404;
             throw error;
         }
-        return product;
+        return new Product(product);
     }
 
     static async findAll() {
@@ -42,6 +41,11 @@ class Product {
         });
     }
 
+    updateImageData() {
+        this.imagePath = `product-data/images/${this.image}`;
+        this.imageUrl = `/products/assets/images/${this.image}`;
+    }
+
     async save() {
         const productData = {
             title: this.title,
@@ -50,7 +54,23 @@ class Product {
             description: this.description,
             image: this.image
         };
-        await db.getDb().collection('products').insertOne(productData);
+        if (this.id) {
+            const productId = this.id;
+
+            if (!this.image) {
+                delete productData.image;
+            }
+            await db.getDb().collection('products').updateOne({_id: productId}, {
+                $set: productData,
+            });
+        } else {
+            await db.getDb().collection('products').insertOne(productData);
+
+        }
+    }
+    async replaceImage(newImage) {
+        this.image = newImage;
+        this.updateImageData();
     }
 }
 
