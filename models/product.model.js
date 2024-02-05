@@ -55,7 +55,7 @@ class Product {
             image: this.image
         };
         if (this.id) {
-            const productId = this.id;
+            const productId = new mongodb.ObjectId(this.id);
 
             if (!this.image) {
                 delete productData.image;
